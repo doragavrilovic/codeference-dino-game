@@ -117,4 +117,17 @@ describe('hasCollision', () => {
     };
     expect(hasCollision(dino, [smallCactus(DINO_X + 20)])).toBe(false);
   });
+
+  // @regression 2.5: a near miss (visible daylight between the dino's body and
+  // the cactus) is not a crash. The dino sprite's tail/head margins and the
+  // cactus sprite's arm columns overlap, but the hitboxes are strictly disjoint.
+  it('is false for a near miss where only sprite margins overlap', () => {
+    const dino = groundDino();
+    const cactus = smallCactus(85);
+
+    expect(intersects(dino, cactus)).toBe(true);
+    expect(intersects(dino.hitbox, cactus.hitbox)).toBe(false);
+
+    expect(hasCollision(dino, [cactus])).toBe(false);
+  });
 });
